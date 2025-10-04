@@ -1,6 +1,4 @@
-# Priority Scheduling (Non-Preemptive & Preemptive)
-
-# === INPUT SECTION ===
+#user input
 n = int(input("Enter number of processes: "))
 
 original_processes = []
@@ -17,7 +15,7 @@ for i in range(n):
     })
 
 
-# === NON-PREEMPTIVE FUNCTION ===
+# non preempet
 def priority_nonpreemptive(proc_list):
     processes = sorted([p.copy() for p in proc_list], key=lambda x: x["AT"])
     time = 0
@@ -53,15 +51,15 @@ def priority_nonpreemptive(proc_list):
                 "end": end_time
             })
         else:
-            time += 1  # CPU idle
+            time += 1  # cpu idlee
 
     return completed, waiting_time, turnaround_time
 
 
-# === PREEMPTIVE FUNCTION ===
+#preempt
 def priority_preemptive(proc_list):
     processes = sorted([p.copy() for p in proc_list], key=lambda x: x["AT"])
-    # Add remaining time field
+
     for p in processes:
         p["remaining"] = p["BT"]
 
@@ -74,11 +72,10 @@ def priority_preemptive(proc_list):
     gantt = []
 
     while processes or ready or current:
-        # add newly arrived to ready
         ready += [p for p in processes if p["AT"] <= time]
         processes = [p for p in processes if p["AT"] > time]
 
-        # include current back into ready if it's still running
+
         if current:
             ready.append(current)
             current = None
@@ -87,12 +84,12 @@ def priority_preemptive(proc_list):
             ready.sort(key=lambda x: x["priority"])
             current = ready.pop(0)
 
-            # run for 1 unit time
-            gantt.append((time, current["name"]))  # for Gantt chart
+
+            gantt.append((time, current["name"]))
             current["remaining"] -= 1
             time += 1
 
-            # check if finished
+
             if current["remaining"] == 0:
                 end_time = time
                 tat = end_time - current["AT"]
@@ -104,15 +101,13 @@ def priority_preemptive(proc_list):
                     "AT": current["AT"],
                     "BT": current["BT"],
                     "priority": current["priority"],
-                    "start": current["AT"],  # we’ll not show exact start for preemptive
+                    "start": current["AT"],
                     "end": end_time
                 })
                 current = None
-            # else keep current for next cycle
-        else:
-            time += 1  # CPU idle
 
-    # Compress Gantt chart to blocks
+        else:
+            time += 1  #cpu idle
     gantt_blocks = []
     if gantt:
         last_name = gantt[0][1]
@@ -127,11 +122,11 @@ def priority_preemptive(proc_list):
     return completed, waiting_time, turnaround_time, gantt_blocks
 
 
-# === RUN BOTH ===
+#execute bot h algo
 non_completed, non_wt, non_tat = priority_nonpreemptive(original_processes)
 pre_completed, pre_wt, pre_tat, gantt_blocks = priority_preemptive(original_processes)
 
-# === OUTPUT NON-PREEMPTIVE ===
+#non preempt results
 print("\n=== NON-PREEMPTIVE PRIORITY SCHEDULING ===")
 print("Gantt Chart:")
 for c in non_completed:
@@ -153,7 +148,7 @@ for c in non_completed:
 print(f"\nAverage WT = {total_wt/n:.2f}")
 print(f"Average TAT = {total_tat/n:.2f}")
 
-# === OUTPUT PREEMPTIVE ===
+#preempt results
 print("\n=== PREEMPTIVE PRIORITY SCHEDULING ===")
 print("Gantt Chart:")
 for g in gantt_blocks:
@@ -174,5 +169,3 @@ for c in pre_completed:
     print(f"{c['name']}\t{c['AT']}\t{c['BT']}\t{c['priority']}\t{wt}\t{tat}")
 print(f"\nAverage WT = {total_wt/n:.2f}")
 print(f"Average TAT = {total_tat/n:.2f}")
-
-# End of code
