@@ -129,43 +129,58 @@ pre_completed, pre_wt, pre_tat, gantt_blocks = priority_preemptive(original_proc
 #non preempt results
 print("\n=== NON-PREEMPTIVE PRIORITY SCHEDULING ===")
 print("Gantt Chart:")
+chart = "|"
+time_marks = [0]
 for c in non_completed:
-    print(f"| {c['name']} ", end="")
-print("|")
-print("0", end="")
-for c in non_completed:
-    print(f"  {c['end']}", end="")
-print("\n")
+    name = c['name']
+    bt = c['BT']
+    chart += f" {name.center(5)} |"
+    time_marks.append(c['end'])
+print(chart)
 
-print("Process\tAT\tBT\tPrio\tWT\tTAT")
+mark_str = ""
+for t in time_marks:
+    mark_str += f"{str(t).center(7)}"
+print(mark_str + "\n")
+
+print("Process  AT   BT   CT   Prio   WT   TAT")
+row_fmt = "{:<7} {:<4} {:<4} {:<5} {:<6} {:<5} {:<5}" #wag mo na pansinin to para sa alignment lang AHAHAHAHAHAH
 total_wt = total_tat = 0
 for c in non_completed:
     wt = non_wt[c["name"]]
     tat = non_tat[c["name"]]
     total_wt += wt
     total_tat += tat
-    print(f"{c['name']}\t{c['AT']}\t{c['BT']}\t{c['priority']}\t{wt}\t{tat}")
+    print(row_fmt.format(c['name'], c['AT'], c['BT'], c['end'], c['priority'], wt, tat))
+
 print(f"\nAverage WT = {total_wt/n:.2f}")
 print(f"Average TAT = {total_tat/n:.2f}")
 
 #preempt results
 print("\n=== PREEMPTIVE PRIORITY SCHEDULING ===")
 print("Gantt Chart:")
-for g in gantt_blocks:
-    print(f"| {g[0]} ", end="")
-print("|")
-print(f"{gantt_blocks[0][1]}", end="")
-for g in gantt_blocks:
-    print(f"  {g[2]}", end="")
-print("\n")
 
-print("Process\tAT\tBT\tPrio\tWT\tTAT")
+chart = "|"
+time_marks = [gantt_blocks[0][1]]
+for g in gantt_blocks:
+    name = g[0]
+    width = g[2] - g[1]
+    chart += f" {name.center(5)} |"
+    time_marks.append(g[2])
+print(chart)
+mark_str = ""
+for t in time_marks:
+    mark_str += f"{str(t).center(7)}"
+print(mark_str + "\n")
+
+print("Process  AT   BT   CT   Prio   WT   TAT")
+row_fmt = "{:<7} {:<4} {:<4} {:<5} {:<6} {:<5} {:<5}" #wag mo na pansinin to para sa alignment lang AHAHAHAHAHAH
 total_wt = total_tat = 0
 for c in pre_completed:
     wt = pre_wt[c["name"]]
     tat = pre_tat[c["name"]]
     total_wt += wt
     total_tat += tat
-    print(f"{c['name']}\t{c['AT']}\t{c['BT']}\t{c['priority']}\t{wt}\t{tat}")
+    print(row_fmt.format(c['name'], c['AT'], c['BT'], c['end'], c['priority'], wt, tat))
 print(f"\nAverage WT = {total_wt/n:.2f}")
 print(f"Average TAT = {total_tat/n:.2f}")
