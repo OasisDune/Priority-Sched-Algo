@@ -15,7 +15,7 @@ for i in range(n):
     })
 
 
-# non preempet
+# non preempt
 def priority_nonpreemptive(proc_list):
     processes = sorted([p.copy() for p in proc_list], key=lambda x: x["AT"])
     time = 0
